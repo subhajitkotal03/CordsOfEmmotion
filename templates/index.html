@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#0b0e11">
+  <meta name="description"
+    content="CordsOfEmmotion detects your facial expression automatically and discovers Hindi, Bengali, and English music on Spotify.">
+  <title>CordsOfEmmotion — Your Expression. Your Music.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg app-nav" aria-label="Main navigation">
+    <div class="container-fluid page-shell">
+      <a class="navbar-brand brand" href="#home">
+        <span class="brand-mark" aria-hidden="true">♫</span>
+        CordsOf<span class="brand-accent">Emmotion</span>
+      </a>
+      <button class="navbar-toggler nav-toggle" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+        aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+      <div class="collapse navbar-collapse" id="mainNav">
+        <div class="navbar-nav ms-auto nav-links">
+          <a class="nav-link active" href="#home">Home</a>
+          <a class="nav-link" href="#studio">Studio</a>
+          <a class="nav-link" href="#discover">Discover</a>
+          <a class="nav-link" href="#about">About</a>
+        </div>
+        <a href="#studio" class="nav-action">Launch studio <span aria-hidden="true">↗</span></a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="page-shell">
+    <section class="hero-section" id="home">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="pulse-dot"></span> Real-time Expression &amp; Music Studio</div>
+        <h1>Your expression.<br><span>Your music.</span></h1>
+        <p>Turn on your camera or upload a photo. CordsOfEmmotion automatically scans your expression and queues Hindi,
+          Bengali, and English tracks matched to the moment.</p>
+        <div class="hero-actions">
+          <a class="button-primary" href="#studio">Start detection <span>↓</span></a>
+          <a class="button-quiet" href="#discover"><span class="play-small">▶</span> Browse music</a>
+        </div>
+      </div>
+
+      <aside class="hero-panel surface-card" aria-label="How CordsOfEmmotion works">
+        <div class="hero-panel-head">
+          <span class="eyebrow">WORKFLOW</span>
+          <span class="status-chip">On-Device + Spotify</span>
+        </div>
+        <div class="workflow-steps">
+          <div class="workflow-step">
+            <span class="step-num">01</span>
+            <div>
+              <strong>Continuous Face Scan</strong>
+              <p>Opens your webcam and scans automatically until a face is detected.</p>
+            </div>
+          </div>
+          <div class="workflow-step">
+            <span class="step-num">02</span>
+            <div>
+              <strong>Emotion Detection</strong>
+              <p>Identifies angry, disgust, fear, happy, neutral, sad, or surprise.</p>
+            </div>
+          </div>
+          <div class="workflow-step">
+            <span class="step-num">03</span>
+            <div>
+              <strong>Instant Spotify Playback</strong>
+              <p>Loads mood-matched Hindi, Bengali, and English songs ready to play.</p>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="studio-section section-block" id="studio">
+      <div class="section-heading">
+        <div>
+          <div class="eyebrow">01 — Expression Studio</div>
+          <h2>Automatic mood detection.</h2>
+        </div>
+        <p>Start your camera to scan hands-free until a face is detected, or upload any portrait photo for instant
+          recommendations.</p>
+      </div>
+
+      <div class="studio-grid">
+        <div class="camera-card surface-card">
+          <div class="card-topline">
+            <span class="live-badge"><span class="pulse-dot"></span> CAMERA STUDIO</span>
+            <span class="lock-note">Private by design · Not stored</span>
+          </div>
+          <div class="video-frame" id="videoFrame">
+            <video id="cameraVideo" autoplay playsinline muted aria-label="Live webcam preview"></video>
+            <canvas id="captureCanvas" hidden></canvas>
+            <div class="camera-placeholder" id="cameraPlaceholder">
+              <div class="camera-orb">⌁</div>
+              <strong>Ready for automatic capture</strong>
+              <span>Click Start camera to scan continuously until your face is detected.</span>
+            </div>
+            <div class="camera-overlay">
+              <span class="focus-corner corner-tl"></span>
+              <span class="focus-corner corner-tr"></span>
+              <span class="focus-corner corner-bl"></span>
+              <span class="focus-corner corner-br"></span>
+              <span class="camera-status" id="cameraStatus">CAMERA OFF</span>
+            </div>
+          </div>
+          <div class="camera-controls">
+            <button class="button-primary" id="startCamera" type="button">Start camera <span>↗</span></button>
+            <button class="button-icon" id="stopCamera" type="button" disabled aria-label="Stop camera" title="Stop camera">■</button>
+            <label class="upload-button" for="imageUpload">↑ <span>Upload photo</span></label>
+            <input id="imageUpload" type="file" accept="image/jpeg,image/png,image/webp,image/bmp" hidden>
+          </div>
+          <p class="inline-message" id="cameraMessage" aria-live="polite">Camera access requires your permission.
+            Detection starts automatically once the camera opens, or you can upload a photo.</p>
+        </div>
+
+        <aside class="result-card surface-card" aria-labelledby="resultTitle">
+          <div class="card-topline">
+            <span class="eyebrow">THE READ</span>
+            <span class="result-state" id="resultState">WAITING FOR INPUT</span>
+          </div>
+
+          <div class="result-body">
+            <div class="result-empty" id="resultEmpty">
+              <div class="result-glyph">◌</div>
+              <h3 id="resultTitle">Your mood will appear here</h3>
+              <p>Start the camera or upload a photo to detect your facial expression and unlock playlists.</p>
+            </div>
+
+            <div class="result-content" id="resultContent" hidden>
+              <div class="emotion-head">
+                <div class="emotion-icon" id="emotionIcon">✦</div>
+                <div>
+                  <span class="overline">DETECTED EMOTION</span>
+                  <h3 id="emotionName">—</h3>
+                </div>
+              </div>
+              <p class="estimate-note" id="estimateNote">Tracks below are automatically curated for this detected
+                expression. Start the camera again anytime to re-scan.</p>
+            </div>
+          </div>
+
+          <div class="result-meta">
+            <div class="meta-item">
+              <span>Catalog</span>
+              <strong>Hindi · Bengali · English</strong>
+            </div>
+            <div class="meta-item">
+              <span>Playback</span>
+              <strong>Auto-play Spotify Embed</strong>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="discover-section section-block" id="discover">
+      <div class="section-heading">
+        <div>
+          <div class="eyebrow">02 — Mood-Matched Music</div>
+          <h2>Curated for the moment.</h2>
+        </div>
+        <p>Browse songs across Hindi, Bengali, and English matched to your emotion. Tap Play here to stream immediately
+          or refresh for a new set.</p>
+      </div>
+
+      <div class="tracks-toolbar surface-card">
+        <div class="tracks-title">
+          <span class="music-mark">♫</span>
+          <div>
+            <strong>Recommended tracks</strong>
+            <span id="tracksSubtitle">Start camera or upload a photo to load songs</span>
+          </div>
+        </div>
+        <div class="track-actions">
+          <span class="spotify-credit">Powered by Spotify</span>
+          <button class="button-outline refresh-button" id="refreshTracks" type="button" disabled>↻ Refresh set</button>
+        </div>
+      </div>
+
+      <div class="spotify-player surface-card" id="spotifyPlayerWrap" hidden>
+        <div class="player-header">
+          <span class="eyebrow"><span class="pulse-dot"></span> NOW PLAYING</span>
+          <strong id="nowPlayingTitle">Spotify embedded player</strong>
+        </div>
+        <div id="spotifyPlayerMount">
+          <div id="spotifyPlayer"></div>
+        </div>
+      </div>
+
+      <p class="inline-message tracks-message" id="tracksMessage" aria-live="polite"></p>
+
+      <div class="tracks-grid" id="tracksGrid">
+        <div class="tracks-empty surface-card">
+          <span>♫</span>
+          <strong>Your soundtrack is one scan away.</strong>
+          <p>Start your camera for automatic detection or upload a photo to load mood-matched songs.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="about-strip surface-card" id="about">
+      <div class="about-symbol">✳</div>
+      <div>
+        <span class="eyebrow">ABOUT CORDSOFEMMOTION</span>
+        <h2>Music is personal. <span>Built for privacy.</span></h2>
+      </div>
+      <p>CordsOfEmmotion runs facial expression inference locally on this server and fetches public track metadata via
+        Spotify. Captured frames are processed once in memory and never stored.</p>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <div class="page-shell footer-inner">
+      <a class="brand" href="#home">
+        <span class="brand-mark" aria-hidden="true">♫</span>
+        CordsOf<span class="brand-accent">Emmotion</span>
+      </a>
+      <span>Music discovery, tuned to you. © <span id="year"></span> CordsOfEmmotion</span>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{{ url_for('static', filename='js/app.js') }}" defer></script>
+</body>
+
+</html>

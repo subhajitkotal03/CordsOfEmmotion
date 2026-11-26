@@ -1,0 +1,14 @@
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+__pycache__/
+*.py[cod]
+instance/
+.pytest_cache/
+.coverage
+*.log
+
+models/*.h5
+models/*.keras
